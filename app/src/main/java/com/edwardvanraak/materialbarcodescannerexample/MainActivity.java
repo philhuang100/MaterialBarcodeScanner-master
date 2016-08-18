@@ -36,12 +36,13 @@ public class MainActivity extends AppCompatActivity {
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         assertNotNull(result);
         assertNotNull(fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+       /*fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                startScan();
             }
-        });
+        });*/
+        startScan();
         if(savedInstanceState != null){
             Barcode restoredBarcode = savedInstanceState.getParcelable(BARCODE_KEY);
             if(restoredBarcode != null){
