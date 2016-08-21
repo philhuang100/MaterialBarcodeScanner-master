@@ -2,15 +2,20 @@ package com.edwardvanraak.materialbarcodescannerexample;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScanner;
 import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScannerBuilder;
@@ -25,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private Barcode barcodeResult;
 
     private TextView result;
-
+    String tono="";
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         assertNotNull(result);
         assertNotNull(fab);
+        Intent it=getIntent();
+        tono=it.getStringExtra("TN");
        /*fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -43,15 +50,20 @@ public class MainActivity extends AppCompatActivity {
             }
         });*/
         startScan();
+        //================================
+
+        //=============================
         if(savedInstanceState != null){
             Barcode restoredBarcode = savedInstanceState.getParcelable(BARCODE_KEY);
             if(restoredBarcode != null){
                 result.setText(restoredBarcode.rawValue);
                 barcodeResult = restoredBarcode;
-            }
+             }
         }
     }
+//=================
 
+    //=================
     private void startScan() {
         /**
          * Build a new MaterialBarcodeScanner
@@ -62,16 +74,25 @@ public class MainActivity extends AppCompatActivity {
                 .withBleepEnabled(true)
                 .withBackfacingCamera()
                 .withCenterTracker()
-                .withText("Scanning...")
+                .withText("掃描中...")
                 .withResultListener(new MaterialBarcodeScanner.OnResultListener() {
                     @Override
                     public void onResult(Barcode barcode) {
                         barcodeResult = barcode;
                         result.setText(barcode.rawValue);
+                        Intent intent = new Intent("ReplyActivity.intent.action.Launch");
+                        intent.putExtra("BC",barcode.rawValue.toString());
+                        intent.putExtra("TO",tono);
+                        startActivity(intent);
+                       // MainActivity.this.finish();
+                        //===================
+
+                        //=================
                     }
                 })
                 .build();
         materialBarcodeScanner.startScan();
+        MainActivity.this.finish();
     }
 
     @Override
@@ -101,4 +122,7 @@ public class MainActivity extends AppCompatActivity {
                 .setPositiveButton(android.R.string.ok, listener)
                 .show();
     }
+
+
+
 }
